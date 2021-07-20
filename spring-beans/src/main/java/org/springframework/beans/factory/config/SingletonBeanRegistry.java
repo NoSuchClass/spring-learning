@@ -20,12 +20,12 @@ import org.springframework.lang.Nullable;
 
 /**
  * Interface that defines a registry for shared bean instances.
- * 定义单例bean实例的注册方式
+ * <p>定义单例bean实例的注册方式
  *
- * Can be implemented by {@link org.springframework.beans.factory.BeanFactory}
+ * <p>Can be implemented by {@link org.springframework.beans.factory.BeanFactory}
  * implementations in order to expose their singleton management facility
  * in a uniform manner.
- * 可以被BeanFactory的实例去实现，以一种更加统一的风格来暴露单例对象的管理方式
+ * <p>可以被BeanFactory的实例去实现，以一种更加统一的风格来暴露单例对象的管理方式
  *
  * <p>The {@link ConfigurableBeanFactory} interface extends this interface.
  *
@@ -52,7 +52,7 @@ public interface SingletonBeanRegistry {
 	 * for runtime registration of singletons. As a consequence【后果是】, a registry
 	 * implementation should synchronize singleton access; it will have to do
 	 * this anyway if it supports a BeanFactory's lazy initialization of singletons.
-	 * 在注册时加锁的原因是：由于需要支持 BeanFactory 单例对象的延迟加载
+	 * <p>在注册时加锁的原因是：由于需要支持 BeanFactory 单例对象的延迟加载
 	 *
 	 * @param beanName the name of the bean
 	 * @param singletonObject the existing singleton object
@@ -66,13 +66,13 @@ public interface SingletonBeanRegistry {
 	 * Return the (raw) singleton object registered under the given name.
 	 * <p>Only checks already instantiated singletons; does not return an Object
 	 * for singleton bean definitions which have not been instantiated yet.
-	 * 只会返回初始化完成的单例对象
+	 * <p>只会返回初始化完成的单例对象
 	 * <p>The main purpose of this method is to access manually registered singletons
 	 * (see {@link #registerSingleton}). Can also be used to access a singleton
 	 * defined by a bean definition that already been created, in a raw fashion.
 	 * <p><b>NOTE:</b> This lookup method is not aware of FactoryBean prefixes or aliases.
 	 * You need to resolve the canonical bean name【规范的 bean 名称】 first before obtaining the singleton instance.
-	 * 不会解析别名 beanName ，所以需要提前解析为规范的 beanName 才能进行查找
+	 * <p>不会解析别名 beanName ，所以需要提前解析为规范的 beanName 才能进行查找
 	 * @param beanName the name of the bean to look for
 	 * @return the registered singleton object, or {@code null} if none found
 	 * @see ConfigurableListableBeanFactory#getBeanDefinition

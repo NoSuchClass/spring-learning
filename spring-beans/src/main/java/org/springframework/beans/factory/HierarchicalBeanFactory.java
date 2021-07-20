@@ -21,8 +21,9 @@ import org.springframework.lang.Nullable;
 /**
  * Sub-interface implemented by bean factories that can be part
  * of a hierarchy.
- * 提供给拥有层级结构的 bean-factory 去实现，代表该 bean-factory 是具有层级关系的【能够获取到父级工厂】
- *
+ * <p>提供给拥有层级结构的 bean-factory 去实现，代表该 bean-factory 是具有层级关系的【能够获取到父级工厂】
+ * <p>注意：这个接口提供的是获取的能力，没有赋值父工厂的能力。这点和 BeanFactory 非常相似，不提供赋值方法，而
+ * 只是提供获取的方法。
  * <p>The corresponding {@code setParentBeanFactory} method for bean
  * factories that allow setting the parent in a configurable
  * fashion can be found in the ConfigurableBeanFactory interface.
