@@ -35,12 +35,15 @@ import org.springframework.util.StringValueResolver;
  * facilities to configure a bean factory, in addition to the bean factory
  * client methods in the {@link org.springframework.beans.factory.BeanFactory}
  * interface.
+ * 能够被大多数 bean factory 实现，提供配置 bean factory 的能力。
+ * tips:【能力抽象化，成为接口，子类实现后代表 has-a 关系，拥有该能力】
  *
  * <p>This bean factory interface is not meant to be used in normal application
  * code: Stick to {@link org.springframework.beans.factory.BeanFactory} or
  * {@link org.springframework.beans.factory.ListableBeanFactory} for typical
  * needs. This extended interface is just meant to allow for framework-internal
  * plug'n'play and for special access to bean factory configuration methods.
+ * 不是提供给一般的应用代码使用的，而是给框架内部使用，一般是和着 BeanFactory 和 ListableBeanFactory 一起使用
  *
  * @author Juergen Hoeller
  * @since 03.11.2003
@@ -299,6 +302,9 @@ public interface ConfigurableBeanFactory extends HierarchicalBeanFactory, Single
 	 * <p>Typically invoked during factory configuration, but can also be
 	 * used for runtime registration of aliases. Therefore, a factory
 	 * implementation should synchronize alias access.
+	 * Spring 中的 alias-name 一般是用来表示那些不符合 XML ids 规范的 bean name
+	 * 也是由于可能在运行时注册别名，因此加锁同步处理该方法
+	 *
 	 * @param beanName the canonical name of the target bean
 	 * @param alias the alias to be registered for the bean
 	 * @throws BeanDefinitionStoreException if the alias is already in use
