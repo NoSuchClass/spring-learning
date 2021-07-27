@@ -42,6 +42,7 @@ import org.springframework.util.StringUtils;
  * {@link org.springframework.beans.factory.config.SingletonBeanRegistry}.
  * Allows for registering singleton instances that should be shared
  * for all callers of the registry, to be obtained via bean name.
+ * 通用的共享 bean 实例注册器，能够注册被所有调用者共享的单例实例
  *
  * <p>Also supports registration of
  * {@link org.springframework.beans.factory.DisposableBean} instances,
@@ -131,6 +132,7 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * @param singletonObject the singleton object
 	 */
 	protected void addSingleton(String beanName, Object singletonObject) {
+		// todo why use synchronized in here too while it has been used in registerSingleton
 		synchronized (this.singletonObjects) {
 			this.singletonObjects.put(beanName, singletonObject);
 			this.singletonFactories.remove(beanName);
@@ -168,6 +170,10 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * Return the (raw) singleton object registered under the given name.
 	 * <p>Checks already instantiated singletons and also allows for an early
 	 * reference to a currently created singleton (resolving a circular reference).
+	 * <p>通过给定的名称获取对应单例对象实例或者原始类型 - 比如工厂类的获取
+	 * 既可以获取实例化好了的单例对象，也可以获取对应正在创建中的单例的早期引用（正在创建的原因是：正在解决循环应用，等待依赖对象创建完成？）
+	 * todo to check whether an early reference while be generated when resolving a circular reference
+	 *
 	 * @param beanName the name of the bean to look for
 	 * @param allowEarlyReference whether early references should be created or not
 	 * @return the registered singleton object, or {@code null} if none found

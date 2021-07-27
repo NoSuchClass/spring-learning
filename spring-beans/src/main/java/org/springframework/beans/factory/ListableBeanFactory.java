@@ -29,11 +29,14 @@ import org.springframework.lang.Nullable;
  * by name one by one as requested by clients. BeanFactory implementations that
  * preload all their bean definitions (such as XML-based factories) may implement
  * this interface.
+ * 该接口作为 BeanFactory 的拓展接口，定义了如何一次性获取所有的 bean 实例，从而请求方不用一个一个地查表
+ * 如果存在需要预加载所有 bean definition 的 bean 工厂 ，那么就应该实现这个接口
  *
  * <p>If this is a {@link HierarchicalBeanFactory}, the return values will <i>not</i>
  * take any BeanFactory hierarchy into account, but will relate only to the beans
  * defined in the current factory. Use the {@link BeanFactoryUtils} helper class
  * to consider beans in ancestor factories too.
+ * 如果该接口的实现类同时实现了 HierarchicalBeanFactory ，则返回值不会考虑层次结构，并且只会返回本层工厂相关的 bean 实例
  *
  * <p>The methods in this interface will just respect bean definitions of this factory.
  * They will ignore any singleton beans that have been registered by other means like
@@ -44,6 +47,8 @@ import org.springframework.lang.Nullable;
  * does allow transparent access to such special beans as well. However, in typical
  * scenarios, all beans will be defined by external bean definitions anyway, so most
  * applications don't need to worry about this differentiation.
+ * 这个接口中的所有方法只会关心当前工厂的 bean 方法，忽略掉类似于 ConfigurableBeanFactory 这种，
+ * 其他工厂注册的 bean ，但是不必太过关系这个区别
  *
  * <p><b>NOTE:</b> With the exception of {@code getBeanDefinitionCount}
  * and {@code containsBeanDefinition}, the methods in this interface

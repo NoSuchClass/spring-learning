@@ -93,15 +93,16 @@ import org.springframework.util.StringUtils;
  *
  * <p>Typical usage is registering all bean definitions first (possibly read
  * from a bean definition file), before accessing beans. Bean lookup by name
- * is therefore an inexpensive operation in a local bean definition table,
- * operating on pre-resolved bean definition metadata objects.
+ * is therefore an inexpensive【廉价、低成本】 operation in a local bean definition table,
+ * operating on pre-resolved【译为预加载】 bean definition metadata objects.
  *
  * <p>Note that readers for specific bean definition formats are typically
  * implemented separately rather than as bean factory subclasses:
  * see for example {@link PropertiesBeanDefinitionReader} and
  * {@link org.springframework.beans.factory.xml.XmlBeanDefinitionReader}.
+ * 特定bean的解析器通常是单独实现bean的注册功能，而不是直接继承自该类
  *
- * <p>For an alternative implementation of the
+ * <p>For an alternative【可替换的】 implementation of the
  * {@link org.springframework.beans.factory.ListableBeanFactory} interface,
  * have a look at {@link StaticListableBeanFactory}, which manages existing
  * bean instances rather than creating new ones based on bean definitions.

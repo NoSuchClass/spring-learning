@@ -21,7 +21,8 @@ import org.springframework.lang.Nullable;
 /**
  * A service interface for type conversion. This is the entry point into the convert system.
  * Call {@link #convert(Object, Class)} to perform a thread-safe type conversion using this system.
- *
+ * <p>该接口的作用是负责类型转换。也是转换系统的一个入口点。
+ * <p>调用 convert(Object, Class) 方法可以实现在当前系统执行线程安全的类型转换
  * @author Keith Donald
  * @author Phillip Webb
  * @since 3.0
