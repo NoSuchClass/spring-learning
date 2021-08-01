@@ -24,6 +24,7 @@ import org.springframework.core.io.ResourceLoader;
 /**
  * Strategy interface for resolving a location pattern (for example,
  * an Ant-style path pattern) into Resource objects.
+ * 用于同时加载多个指定路径下的 Resource 资源。
  *
  * <p>This is an extension to the {@link org.springframework.core.io.ResourceLoader}
  * interface. A passed-in ResourceLoader (for example, an
@@ -58,6 +59,7 @@ public interface ResourcePatternResolver extends ResourceLoader {
 	 * This differs from ResourceLoader's classpath URL prefix in that it
 	 * retrieves all matching resources for a given name (e.g. "/beans.xml"),
 	 * for example in the root of all deployed JAR files.
+	 * 匹配路径下所有满足条件的文件-classpath*:
 	 * @see org.springframework.core.io.ResourceLoader#CLASSPATH_URL_PREFIX
 	 */
 	String CLASSPATH_ALL_URL_PREFIX = "classpath*:";

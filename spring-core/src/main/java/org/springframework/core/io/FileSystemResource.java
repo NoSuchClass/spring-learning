@@ -41,6 +41,7 @@ import org.springframework.util.StringUtils;
  * {@code java.nio.file.Path} handles with a file system target.
  * Supports resolution as a {@code File} and also as a {@code URL}.
  * Implements the extended {@link WritableResource} interface.
+ * 支持解析为 File 或者 URL。
  *
  * <p>Note: As of Spring Framework 5.0, this {@link Resource} implementation uses
  * NIO.2 API for read/write interactions. As of 5.1, it may be constructed with a

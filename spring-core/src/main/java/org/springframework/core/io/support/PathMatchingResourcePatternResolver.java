@@ -58,13 +58,20 @@ import org.springframework.util.StringUtils;
 /**
  * A {@link ResourcePatternResolver} implementation that is able to resolve a
  * specified resource location path into one or more matching Resources.
+ * 用于解析满足指定资源路径的一个或多个资源。
  * The source path may be a simple path which has a one-to-one mapping to a
  * target {@link org.springframework.core.io.Resource}, or alternatively
  * may contain the special "{@code classpath*:}" prefix and/or
  * internal Ant-style regular expressions (matched using Spring's
  * {@link org.springframework.util.AntPathMatcher} utility).
  * Both of the latter are effectively wildcards.
- *
+ * <p>该类的路径可以是一对一映射关系，也可以是使用 classpath*: 或者内置的 ant 风格的表达式
+ * <p>ANT通配符有三种：
+ * <p>通配符	说明
+ * <ul><li>?	匹配任何单字符
+ * <li>*	匹配0或者任意数量的字符
+ * <li>**	匹配0或者更多的目录
+ * </ul>
  * <p><b>No Wildcards:</b>
  *
  * <p>In the simple case, if the specified location path does not start with the
@@ -489,8 +496,12 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	 * @see org.springframework.util.PathMatcher
 	 */
 	protected Resource[] findPathMatchingResources(String locationPattern) throws IOException {
+		// locationPattern: classpath*:com/spring/core/**/*.class
+		// rootDirPath: classpath*:com/spring/core/
 		String rootDirPath = determineRootDir(locationPattern);
+		// subPattern: **/*.class
 		String subPattern = locationPattern.substring(rootDirPath.length());
+		// 获取到所有满足 rootDirPath 的全路径URL [file:/Users/xxx/IdeaProjects/spring-framework/spring/target/com/spring/core/]
 		Resource[] rootDirResources = getResources(rootDirPath);
 		Set<Resource> result = new LinkedHashSet<>(16);
 		for (Resource rootDirResource : rootDirResources) {
@@ -510,6 +521,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 				result.addAll(doFindPathMatchingJarResources(rootDirResource, rootDirUrl, subPattern));
 			}
 			else {
+				// 查找能够匹配上的资源
 				result.addAll(doFindPathMatchingFileResources(rootDirResource, subPattern));
 			}
 		}
@@ -685,6 +697,7 @@ public class PathMatchingResourcePatternResolver implements ResourcePatternResol
 	/**
 	 * Find all resources in the file system that match the given location pattern
 	 * via the Ant-style PathMatcher.
+	 * <p>通过 ant 风格匹配器在文件系统中去查找所有满足给定路径匹配规则的资源。
 	 * @param rootDirResource the root directory as Resource
 	 * @param subPattern the sub pattern to match (below the root directory)
 	 * @return a mutable Set of matching Resource instances

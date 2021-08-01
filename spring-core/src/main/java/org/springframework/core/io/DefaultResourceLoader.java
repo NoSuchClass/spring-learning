@@ -16,6 +16,7 @@
 
 package org.springframework.core.io;
 
+import java.lang.reflect.Method;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Collection;
@@ -35,6 +36,7 @@ import org.springframework.util.StringUtils;
  * Used by {@link ResourceEditor}, and serves as base class for
  * {@link org.springframework.context.support.AbstractApplicationContext}.
  * Can also be used standalone.
+ * {@link ResourceLoader} 的默认实现。
  *
  * <p>Will return a {@link UrlResource} if the location value is a URL,
  * and a {@link ClassPathResource} if it is a non-URL path or a
@@ -57,6 +59,8 @@ public class DefaultResourceLoader implements ResourceLoader {
 
 	/**
 	 * Create a new DefaultResourceLoader.
+	 * <p>无参构造函数，初始化类加载器。一般是 Thread.currentThread().getContextClassLoader()。
+	 * <p>后续也可通过 set 方法对 classLoader 赋值。
 	 * <p>ClassLoader access will happen using the thread context class loader
 	 * at the time of this ResourceLoader's initialization.
 	 * @see java.lang.Thread#getContextClassLoader()
@@ -144,13 +148,14 @@ public class DefaultResourceLoader implements ResourceLoader {
 	public Resource getResource(String location) {
 		Assert.notNull(location, "Location must not be null");
 
+		// 优先使用自定义的拓展解析器来解析资源路径
 		for (ProtocolResolver protocolResolver : getProtocolResolvers()) {
 			Resource resource = protocolResolver.resolve(location, this);
 			if (resource != null) {
 				return resource;
 			}
 		}
-
+		// 先解析以 / 开头的普通路径，再解析以 classpath: 开头的类路径，最后包装成 URL 类，来判断是文件URL还是普通的URL
 		if (location.startsWith("/")) {
 			return getResourceByPath(location);
 		}
@@ -168,6 +173,15 @@ public class DefaultResourceLoader implements ResourceLoader {
 				return getResourceByPath(location);
 			}
 		}
+	}
+
+	public static void main(String[] args) {
+		try {
+			DefaultResourceLoader loader = new DefaultResourceLoader();
+			Method getResource = DefaultResourceLoader.class.getMethod("getResource", String.class);
+			Object invoke = getResource.invoke(loader, "D:/Users/xx/Documents/spark.txt");
+			System.out.println(invoke);
+		} catch (Exception ignore) {}
 	}
 
 	/**

@@ -20,6 +20,8 @@ package org.springframework.core.io;
  * {@link ResourceLoader} implementation that resolves plain paths as
  * file system resources rather than as class path resources
  * (the latter is {@link DefaultResourceLoader}'s default strategy).
+ * <p>该类是 ResourceLoader 的实现，用于解析普通路径为文件系统的资源，
+ * 而不是像 {@link DefaultResourceLoader} 的默认策略那样优先解析为 classpath 资源
  *
  * <p><b>NOTE:</b> Plain paths will always be interpreted as relative
  * to the current VM working directory, even if they start with a slash.

@@ -20,10 +20,12 @@ import org.springframework.lang.Nullable;
 
 /**
  * A resolution strategy for protocol-specific resource handles.
+ * <p>该接口是一个用于拓展资源文件解析策略的 SPI ，允许解析自定义的协议文件
  *
  * <p>Used as an SPI for {@link DefaultResourceLoader}, allowing for
  * custom protocols to be handled without subclassing the loader
  * implementation (or application context implementation).
+ * <p>Spring 中并没有该接口的实现，需要调用 {@link DefaultResourceLoader#addProtocolResolver()} 添加自定义的实现
  *
  * @author Juergen Hoeller
  * @since 4.3

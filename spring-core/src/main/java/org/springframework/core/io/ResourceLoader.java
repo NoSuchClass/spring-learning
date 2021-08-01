@@ -24,6 +24,7 @@ import org.springframework.util.ResourceUtils;
  * resources). An {@link org.springframework.context.ApplicationContext}
  * is required to provide this functionality, plus extended
  * {@link org.springframework.core.io.support.ResourcePatternResolver} support.
+ * 该接口是实现资源加载的策略接口。
  *
  * <p>{@link DefaultResourceLoader} is a standalone implementation that is
  * usable outside an ApplicationContext, also used by {@link ResourceEditor}.
@@ -47,6 +48,7 @@ public interface ResourceLoader {
 
 	/**
 	 * Return a Resource handle for the specified resource location.
+	 * <p>返回指定位置下的资源处理器。
 	 * <p>The handle should always be a reusable resource descriptor,
 	 * allowing for multiple {@link Resource#getInputStream()} calls.
 	 * <p><ul>
@@ -58,6 +60,14 @@ public interface ResourceLoader {
 	 * </ul>
 	 * <p>Note that a Resource handle does not imply an existing resource;
 	 * you need to invoke {@link Resource#exists} to check for existence.
+	 * <p>需要注意的是，一个资源处理器并不是一定代表着实际的资源，需要执行 {@link Resource#exists()}
+	 * 方法去判断是否真实存在。
+	 * <p>该方法支持下述多种类型的文件路径：
+	 *     <ul>
+	 *     <li>全路径，比如："file:C:/test.dat"。
+	 *     <li>classpath路径，比如："classpath:test.dat"。
+	 *     <li>相对路径，比如："WEB-INF/test.dat"。
+	 * </ul>
 	 * @param location the resource location
 	 * @return a corresponding Resource handle (never {@code null})
 	 * @see #CLASSPATH_URL_PREFIX

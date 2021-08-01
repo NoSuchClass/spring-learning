@@ -36,10 +36,12 @@ import org.springframework.util.ResourceUtils;
 /**
  * Convenience base class for {@link Resource} implementations,
  * pre-implementing typical behavior.
+ * 实现了 Resource 接口的基础类，提前实现了一些常用的方法。
  *
  * <p>The "exists" method will check whether a File or InputStream can
  * be opened; "isOpen" will always return false; "getURL" and "getFile"
  * throw an exception; and "toString" will return the description.
+ * 【可以参考此处接口默认实现类的写法，对于不同情况的方法如何进行返回】
  *
  * @author Juergen Hoeller
  * @author Sam Brannen
@@ -153,6 +155,7 @@ public abstract class AbstractResource implements Resource {
 	 * This implementation reads the entire InputStream to calculate the
 	 * content length. Subclasses will almost always be able to provide
 	 * a more optimal version of this, e.g. checking a File length.
+	 * <p>计算读取资源的长度【自己写的时候可以参考这种写法】
 	 * @see #getInputStream()
 	 */
 	@Override
@@ -183,6 +186,7 @@ public abstract class AbstractResource implements Resource {
 	/**
 	 * This implementation checks the timestamp of the underlying File,
 	 * if available.
+	 * <p>获取上次文件更新时间
 	 * @see #getFileForLastModifiedCheck()
 	 */
 	@Override
