@@ -23,6 +23,7 @@ import org.xml.sax.InputSource;
 
 /**
  * Strategy interface for loading an XML {@link Document}.
+ * <p>加载 XML Document 的策略接口。
  *
  * @author Rob Harrop
  * @since 2.0
@@ -32,6 +33,7 @@ public interface DocumentLoader {
 
 	/**
 	 * Load a {@link Document document} from the supplied {@link InputSource source}.
+	 * <p>从给定的 {@link InputSource} 数据源加载 {@link Document} 对象。
 	 * @param inputSource the source of the document that is to be loaded
 	 * @param entityResolver the resolver that is to be used to resolve any entities
 	 * @param errorHandler used to report any errors during document loading

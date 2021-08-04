@@ -32,13 +32,15 @@ import org.springframework.util.xml.XmlValidationModeDetector;
 
 /**
  * Spring's default {@link DocumentLoader} implementation.
+ * <p>Spring 默认的 {@link DocumentLoader}，加载文档对象的默认实现。
  *
- * <p>Simply loads {@link Document documents} using the standard JAXP-configured
+ * <p>Simply loads {@link Document documents} using the standard JAXP-configured(Java API for XML Processing)
  * XML parser. If you want to change the {@link DocumentBuilder} that is used to
  * load documents, then one strategy is to define a corresponding Java system property
- * when starting your JVM. For example, to use the Oracle {@link DocumentBuilder},
- * you might start your application like as follows:
+ * when starting your JVM.
  *
+ * For example, to use the Oracle {@link DocumentBuilder},
+ * you might start your application like as follows:
  * <pre code="class">java -Djavax.xml.parsers.DocumentBuilderFactory=oracle.xml.jaxp.JXDocumentBuilderFactory MyMainClass</pre>
  *
  * @author Rob Harrop
