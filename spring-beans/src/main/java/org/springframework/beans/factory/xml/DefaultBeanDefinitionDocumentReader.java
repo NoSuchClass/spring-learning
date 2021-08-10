@@ -87,8 +87,10 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	/**
 	 * This implementation parses bean definitions according to the "spring-beans" XSD
 	 * (or DTD, historically).
+	 * <p>该实现通过 spring-beans XSD 来解析 bean definition（或者历史上的 DTD）。
 	 * <p>Opens a DOM Document; then initializes the default settings
 	 * specified at the {@code <beans/>} level; then parses the contained bean definitions.
+	 * <p>打开一个 DOM 文档，然后初始化指定 <beans/> 的默认配置，然后解析其中的 bean definitions。
 	 */
 	@Override
 	public void registerBeanDefinitions(Document doc, XmlReaderContext readerContext) {
@@ -122,8 +124,9 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	protected void doRegisterBeanDefinitions(Element root) {
 		// Any nested <beans> elements will cause recursion in this method.
 		// 在这个方法中，任意嵌套的 <beans> XML元素都会导致递归。
-		// In order to propagate and preserve <beans> default-* attributes correctly, keep track of the current (parent) delegate, which may be null.
-		// 为了正确地复制和保存 <beans> 标签的 default-* 属性，需要监控当前委派或者父类委派（可能为 null ）
+		// In order to propagate and preserve <beans> default-* attributes correctly,
+		// keep track of the current (parent) delegate, which may be null.
+		// 为了正确地复制和保存 <beans> 标签的 default-* 属性，需要监控当前委派或者父类委派（可能为 null）
 		// Create the new (child) delegate with a reference to the parent for fallback purposes,
 		// then ultimately reset this.delegate back to its original (parent) reference.
 		// This behavior emulates a stack of delegates without actually necessitating one.
@@ -217,6 +220,24 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 	 * Parse an "import" element and load the bean definitions
 	 * from the given resource into the bean factory.
 	 * <p>解析 import 元素并且从给定的数据源中加载 bean definitions 到 bean factory 中。
+	 * <p>具体流程：
+	 * 获取 import 后 resource 的具体路径 -> 读取文件 -> 解析成 Resource 数组 ->
+	 * 再一个资源一个资源地递归调用 bean definition 加载接口
+	 * <p>具体解析的标签如下：
+	 *
+	 * <p>{@code
+	 * <?xml version="1.0" encoding="UTF-8"?>
+	 * <beans xmlns="http://www.springframework.org/schema/beans"
+	 *        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	 *        xsi:schemaLocation="http://www.springframework.org/schema/beans
+	 *        http://www.springframework.org/schema/beans/spring-beans.xsd">
+	 *
+	 *     <import resource="spring-student.xml"/>
+	 *
+	 *     <import resource="spring-student-dtd.xml"/>
+	 *
+	 * </beans>
+	 * }
 	 */
 	protected void importBeanDefinitionResource(Element ele) {
 		String location = ele.getAttribute(RESOURCE_ATTRIBUTE);
@@ -226,13 +247,14 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 
 		// Resolve system properties: e.g. "${user.dir}"
-		// 解析系统配置，类似与 "${user.dir}" 这样的占位符
+		// 1、解析系统配置，获取 import 文件的位置（类似于 "${user.dir}" 这样的占位符）。
 		location = getReaderContext().getEnvironment().resolveRequiredPlaceholders(location);
 
 		Set<Resource> actualResources = new LinkedHashSet<>(4);
 
 		// Discover whether the location is an absolute or relative URI
-		// 判断获取到的定位信息是绝对路径还是相对路径
+		// 2、判断获取到的定位信息是绝对路径还是相对路径
+		// 注意：像 classpath: 、 classpath*: 开头的这种伪路径也算作绝对路径
 		boolean absoluteLocation = false;
 		try {
 			absoluteLocation = ResourcePatternUtils.isUrl(location) || ResourceUtils.toURI(location).isAbsolute();
@@ -245,6 +267,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		// Absolute or relative?
 		if (absoluteLocation) {
 			try {
+				// 3、如果是绝对路径，则直接根据地址递归加载 bean definition。
 				int importCount = getReaderContext().getReader().loadBeanDefinitions(location, actualResources);
 				if (logger.isTraceEnabled()) {
 					logger.trace("Imported " + importCount + " bean definitions from URL location [" + location + "]");
@@ -257,6 +280,7 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 		}
 		else {
 			// No URL -> considering resource location as relative to the current file.
+			// 4、如果是相对路径，则组装成绝对路径再进行 递归加载。
 			try {
 				int importCount;
 				Resource relativeResource = getReaderContext().getResource().createRelative(location);

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN 2.0//EN" "https://www.springframework.org/dtd/spring-beans-2.0.dtd">
+
+<beans>
+	<bean class="org.bitongchong.test.xml.TestObject">
+		<property name="name"><value>this is<!-- don't mind me --> a <![CDATA[<!--comment-->]]></value></property>
+		<property name="name2"><value>2</value></property>
+	</bean>
+
+	<bean id="tom" parent="testO">
+		<property name="2"><value>32</value></property>
+	</bean>
+
+	<alias name="org.bitongchong.test.xml.TestObject#0" alias="testO"/>
+</beans>

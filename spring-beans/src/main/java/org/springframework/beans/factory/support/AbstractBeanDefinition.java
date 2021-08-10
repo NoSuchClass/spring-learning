@@ -1164,7 +1164,7 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 		return (ObjectUtils.nullSafeEquals(getBeanClassName(), that.getBeanClassName()) &&
 				ObjectUtils.nullSafeEquals(this.scope, that.scope) &&
 				this.abstractFlag == that.abstractFlag &&
-				this.lazyInit == that.lazyInit &&
+				this.lazyInit.equals(that.lazyInit) &&
 				this.autowireMode == that.autowireMode &&
 				this.dependencyCheck == that.dependencyCheck &&
 				Arrays.equals(this.dependsOn, that.dependsOn) &&

@@ -90,6 +90,7 @@ public class XmlValidationModeDetector {
 	 */
 	public int detectValidationMode(InputStream inputStream) throws IOException {
 		// Peek into the file to look for DOCTYPE.
+		// 在文件中查看是否存在 DOCTYPE 定义，如果存在则是 dtd 校验模型。
 		BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
 		try {
 			boolean isDtdValidated = false;
@@ -113,6 +114,7 @@ public class XmlValidationModeDetector {
 		catch (CharConversionException ex) {
 			// Choked on some character encoding...
 			// Leave the decision up to the caller.
+			// 如果报错，则返回自动获取校验模型，代表最后也没有获取到明确校验模型。
 			return VALIDATION_AUTO;
 		}
 		finally {

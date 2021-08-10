@@ -24,6 +24,7 @@ import org.springframework.lang.Nullable;
  * Simple {@link LinkedList}-based structure for tracking the logical position during
  * a parsing process. {@link Entry entries} are added to the LinkedList at
  * each point during the parse phase in a reader-specific manner.
+ * <p>一个用于追踪当前解析进行的逻辑处理位置。
  *
  * <p>Calling {@link #toString()} will render a tree-style view of the current logical
  * position in the parse phase. This representation is intended for use in
