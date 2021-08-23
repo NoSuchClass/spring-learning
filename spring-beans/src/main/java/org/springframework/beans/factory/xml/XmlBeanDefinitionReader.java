@@ -348,7 +348,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 				if (encodedResource.getEncoding() != null) {
 					inputSource.setEncoding(encodedResource.getEncoding());
 				}
-				// 4、（核心方法）开始加载【前置逻辑为：判断当前资源是否正在加载 & 打开输入流设置编码规则】
+				// 4、（核心方法）开始加载【该方法前置逻辑总结为：判断当前资源是否正在加载 & 打开输入流设置编码规则】
 				return doLoadBeanDefinitions(inputSource, encodedResource.getResource());
 			}
 		}
@@ -404,7 +404,7 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 			throws BeanDefinitionStoreException {
 
 		try {
-			// 1、转换成代表 XML 的 Document 对象【实际上这个地方就是将 XML 文件解析成 JDK 自带的 Document 类】
+			// 1、（重要方法）转换成代表 XML 的 Document 对象【实际上这个地方就是将 XML 文件解析成 JDK 自带的 Document 类】
 			Document doc = doLoadDocument(inputSource, resource);
 			// 2、（核心方法）根据 Document 对象注册 bean definition 到 registry 对象中
 			int count = registerBeanDefinitions(doc, resource);
@@ -541,14 +541,14 @@ public class XmlBeanDefinitionReader extends AbstractBeanDefinitionReader {
 	 * @see BeanDefinitionDocumentReader#registerBeanDefinitions
 	 */
 	public int registerBeanDefinitions(Document doc, Resource resource) throws BeanDefinitionStoreException {
-		// 获取 BeanDefinitionDocumentReader ，该 Reader 可以自定义实现，通过 setDocumentReaderClass 实现自定义拓展。
+		// 1、获取 BeanDefinitionDocumentReader ，该 Reader 可以自定义实现，通过 setDocumentReaderClass 实现自定义拓展。
 		// 默认实现：DefaultBeanDefinitionDocumentReader
 		BeanDefinitionDocumentReader documentReader = createBeanDefinitionDocumentReader();
-		// 获取该方法注册对象前，在 registry 中的 BeanDefinition 数量。
+		// 2、获取该方法注册对象前，在 registry 中的 BeanDefinition 数量。
 		int countBefore = getRegistry().getBeanDefinitionCount();
-		// 解析 Document 对象，同时注册到 registry 中
+		// 3、（核心方法）解析 Document 对象，同时注册到 registry 中
 		documentReader.registerBeanDefinitions(doc, createReaderContext(resource));
-		// 再次获取 registry 中的 BeanDefinition 数量，计算出本次注册了多少 BeanDefinition。
+		// 4、再次获取 registry 中的 BeanDefinition 数量，计算出本次注册了多少 BeanDefinition。
 		return getRegistry().getBeanDefinitionCount() - countBefore;
 	}
 

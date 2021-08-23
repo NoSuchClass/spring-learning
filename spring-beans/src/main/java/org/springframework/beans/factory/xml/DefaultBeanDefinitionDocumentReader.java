@@ -182,16 +182,20 @@ public class DefaultBeanDefinitionDocumentReader implements BeanDefinitionDocume
 					// 判断当前文档节点是否是 Spring 的默认命名空间
 					if (delegate.isDefaultNamespace(ele)) {
 						// 按 Spring 默认的元素类型来解析
+						// xmlns="http://www.springframework.org/schema/beans" 这个 namespace 就是默认的
 						parseDefaultElement(ele, delegate);
 					}
 					else {
 						// 使用自定义的 NamespaceHandlerResolver 来拓展元素解析能力
+						// 类似于 xmlns:context="http://www.springframework.org/schema/context"，这个 context 就是自定义的
 						delegate.parseCustomElement(ele);
 					}
 				}
 			}
 		}
 		else {
+			// 使用自定义的 NamespaceHandlerResolver 来拓展元素解析能力
+			// 类似于 xmlns:context="http://www.springframework.org/schema/context"，这个 context 就是自定义的
 			delegate.parseCustomElement(root);
 		}
 	}

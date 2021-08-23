@@ -133,6 +133,8 @@ public abstract class BeanDefinitionReaderUtils {
 	/**
 	 * Turn the given bean name into a unique bean name for the given bean factory,
 	 * appending a unique counter as suffix if necessary.
+	 * 将给定的 bean name 添加一个必要的后缀，比如传入 org.bitongchong.test.xml.TestObject ，
+	 * 如果当前 registry 中只注册了一个 TestObject bean name，那么会返回 org.bitongchong.test.xml.TestObject#0
 	 * @param beanName the original bean name
 	 * @param registry the bean factory that the definition is going to be
 	 * registered with (to check for existing bean names)

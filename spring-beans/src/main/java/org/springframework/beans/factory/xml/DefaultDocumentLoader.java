@@ -64,23 +64,27 @@ public class DefaultDocumentLoader implements DocumentLoader {
 
 
 	/**
-	 * Load the {@link Document} at the supplied {@link InputSource} using the standard JAXP-configured
-	 * XML parser.
+	 * Load the {@link Document} at the supplied {@link InputSource} using the standard JAXP-configured XML parser.
+	 * <p>使用标准JAXP配置的XML解析器来处理提供的 {@link InputSource},加载并解析成 {@link Document}
 	 */
 	@Override
 	public Document loadDocument(InputSource inputSource, EntityResolver entityResolver,
 			ErrorHandler errorHandler, int validationMode, boolean namespaceAware) throws Exception {
-
+		// 1、传入校验模型 & 命名空间支持与否来构建一个用于创建 DocumentBuilder 的工厂类实例
 		DocumentBuilderFactory factory = createDocumentBuilderFactory(validationMode, namespaceAware);
 		if (logger.isTraceEnabled()) {
 			logger.trace("Using JAXP provider [" + factory.getClass().getName() + "]");
 		}
+		// 2、传入文件实体解析器和异常处理器，通过 DocumentBuilderFactory 创建一个 DocumentBuilder 实例
 		DocumentBuilder builder = createDocumentBuilder(factory, entityResolver, errorHandler);
+		// 3、（核心方法）使用 JAXP - DocumentBuilder 来解析传入的 InputSource XML 资源数据
 		return builder.parse(inputSource);
 	}
 
 	/**
 	 * Create the {@link DocumentBuilderFactory} instance.
+	 * <p>构建一个 JDK 自带的 {@link DocumentBuilderFactory} 实例对象。
+	 * <p>同时设置是否需要支持命名空间 & 设置校验模型。
 	 * @param validationMode the type of validation: {@link XmlValidationModeDetector#VALIDATION_DTD DTD}
 	 * or {@link XmlValidationModeDetector#VALIDATION_XSD XSD})
 	 * @param namespaceAware whether the returned factory is to provide support for XML namespaces
@@ -90,11 +94,14 @@ public class DefaultDocumentLoader implements DocumentLoader {
 	protected DocumentBuilderFactory createDocumentBuilderFactory(int validationMode, boolean namespaceAware)
 			throws ParserConfigurationException {
 
+		// 1、构建一个 JAXP 的 DocumentBuilderFactory 实例，并按照入参设置是否支持命名空间
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
 		factory.setNamespaceAware(namespaceAware);
 
+		// 2、如果验证模型没有被禁用（即 validationMode 不为 0），则设置 validating 为 true，表示需要对文档内容进行校验
 		if (validationMode != XmlValidationModeDetector.VALIDATION_NONE) {
 			factory.setValidating(true);
+			// 3、如果校验模型为 XSD ，则强制开启对命名空间的支持
 			if (validationMode == XmlValidationModeDetector.VALIDATION_XSD) {
 				// Enforce namespace aware for XSD...
 				factory.setNamespaceAware(true);

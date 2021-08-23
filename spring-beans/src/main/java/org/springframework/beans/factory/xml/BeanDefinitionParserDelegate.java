@@ -448,7 +448,6 @@ public class BeanDefinitionParserDelegate {
 		// 5、（核心方法）解析 bean definition
 		AbstractBeanDefinition beanDefinition = parseBeanDefinitionElement(ele, beanName, containingBean);
 		// 6、如果没有指定 bean 的 id 或者 name，则需要自动生成一个 beanName
-		//   比如 <bean class="org.bitongchong.test.xml.TestObject">
 		if (beanDefinition != null) {
 			if (!StringUtils.hasText(beanName)) {
 				try {
