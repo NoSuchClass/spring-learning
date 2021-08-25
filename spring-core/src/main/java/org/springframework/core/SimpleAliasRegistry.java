@@ -210,6 +210,7 @@ public class SimpleAliasRegistry implements AliasRegistry {
 	public String canonicalName(String name) {
 		String canonicalName = name;
 		// Handle aliasing...
+		// 此处循环的作用是由于别名还可能有别名，所以需要通过循环的方式获取到别名的别名所代表的最终真实 bean name
 		String resolvedName;
 		do {
 			resolvedName = this.aliasMap.get(canonicalName);

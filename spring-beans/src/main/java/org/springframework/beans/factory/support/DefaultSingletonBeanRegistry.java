@@ -171,8 +171,9 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 * <p>Checks already instantiated singletons and also allows for an early
 	 * reference to a currently created singleton (resolving a circular reference).
 	 * <p>通过给定的名称获取对应单例对象实例或者原始类型 - 比如工厂类的获取
-	 * 既可以获取实例化好了的单例对象，也可以获取对应正在创建中的单例的早期引用（正在创建的原因是：正在解决循环应用，等待依赖对象创建完成？）
-	 * todo to check whether an early reference while be generated when resolving a circular reference
+	 * 既可以获取实例化好了的单例对象，也可以获取对应正在创建中的单例的早期引用
+	 * 正在创建的原因是：对于单例 bean ，可以在创建之初就将当前需要创建的 bean 给缓存到 singletonsCurrentlyInCreation 中，然后提供
+	 * 能够构建一个对象的 ObjectFactory，此时缓存中的数据还没有填充参数，以此来解决循环依赖的问题。
 	 *
 	 * @param beanName the name of the bean to look for
 	 * @param allowEarlyReference whether early references should be created or not
@@ -180,11 +181,20 @@ public class DefaultSingletonBeanRegistry extends SimpleAliasRegistry implements
 	 */
 	@Nullable
 	protected Object getSingleton(String beanName, boolean allowEarlyReference) {
+		// ==== 此处就有三重缓存的体现 ====
+		// singletonObjects -> earlySingletonObjects -> singletonFactories
+		// 单例 bean 对象实例缓存 -> 未完全初始化的单例对象实例缓存 -> 单例对象的工厂
+
+		// 从缓存中获取单例 bean 的实例
 		Object singletonObject = this.singletonObjects.get(beanName);
+		// 如果缓存中不存在创建好的对象实例，那么则判断当前 beanName 是否在 singletonsCurrentlyInCreation 缓存中，如果在
+		// 则代表当前 beanName 实例正在构建
 		if (singletonObject == null && isSingletonCurrentlyInCreation(beanName)) {
 			synchronized (this.singletonObjects) {
 				singletonObject = this.earlySingletonObjects.get(beanName);
+				// 从早期单例对象缓存中获取 bean，如果为空，且允许持有早期引用
 				if (singletonObject == null && allowEarlyReference) {
+					// 从单例工厂中获取 beanName 对应的 ObjectFactory
 					ObjectFactory<?> singletonFactory = this.singletonFactories.get(beanName);
 					if (singletonFactory != null) {
 						singletonObject = singletonFactory.getObject();
