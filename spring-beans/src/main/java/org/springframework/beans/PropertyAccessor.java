@@ -25,6 +25,7 @@ import org.springframework.lang.Nullable;
  * Common interface for classes that can access named properties
  * (such as bean properties of an object or fields in an object)
  * Serves as base interface for {@link BeanWrapper}.
+ * <p>{@link BeanWrapper}的底层接口，用于访问有属性名称的属性（比如 bean 的一个 字段或者一个对象属性）。
  *
  * @author Juergen Hoeller
  * @since 1.1
@@ -36,6 +37,7 @@ public interface PropertyAccessor {
 
 	/**
 	 * Path separator for nested properties.
+	 * 嵌套属性的分隔符（比如 foo.bar）。
 	 * Follows normal Java conventions: getFoo().getBar() would be "foo.bar".
 	 */
 	String NESTED_PROPERTY_SEPARATOR = ".";
@@ -49,6 +51,7 @@ public interface PropertyAccessor {
 	/**
 	 * Marker that indicates the start of a property key for an
 	 * indexed or mapped property like "person.addresses[0]".
+	 * <p>代表索引信息或者属性映射的开始标志符。
 	 */
 	String PROPERTY_KEY_PREFIX = "[";
 
@@ -61,6 +64,7 @@ public interface PropertyAccessor {
 	/**
 	 * Marker that indicates the end of a property key for an
 	 * indexed or mapped property like "person.addresses[0]".
+	 * <p>代表索引信息或者属性映射的结束标志符。
 	 */
 	String PROPERTY_KEY_SUFFIX = "]";
 
