@@ -1128,11 +1128,13 @@ public abstract class AbstractBeanDefinition extends BeanMetadataAttributeAccess
 	 */
 	protected void prepareMethodOverride(MethodOverride mo) throws BeanDefinitionValidationException {
 		int count = ClassUtils.getMethodCountForName(getBeanClass(), mo.getMethodName());
+		// 获取需要重写的方法数，如果为0直接抛出异常。
 		if (count == 0) {
 			throw new BeanDefinitionValidationException(
 					"Invalid method override: no method with name '" + mo.getMethodName() +
 					"' on class [" + getBeanClassName() + "]");
 		}
+		// 如果数量为1，则代表该方法没有被重载，添加一个 overloaded 的标志，便于后续使用到该方法时不会重复进行参数校验确定究竟使用哪种方法。
 		else if (count == 1) {
 			// Mark override as not overloaded, to avoid the overhead of arg type checking.
 			mo.setOverloaded(false);
