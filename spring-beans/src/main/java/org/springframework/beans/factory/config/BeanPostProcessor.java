@@ -72,8 +72,11 @@ public interface BeanPostProcessor {
 	 * or a custom init-method). The bean will already be populated with property values.
 	 * The returned bean instance may be a wrapper around the original.
 	 * <p>The default implementation returns the given {@code bean} as-is.
-	 * <p>当前 BeanPostProcessor 会在指定的 bean 实例初始化前进行回调（类似于 InitializingBean 的 afterPropertiesSet 或者其他自定义的初始化方法）
-	 * <p>指定的 bean 在调用这个方法前，已经被填充好了对应的属性值，方法返回的 bean 实例将会包装原始 bean。默认返回它本身。如果是null，则不执行。
+	 * <p>当前 BeanPostProcessor 会在指定的 bean 实例初始化前进行回调（类似于 InitializingBean 的 afterPropertiesSet
+	 * 或者其他自定义的初始化方法）
+	 * <p>指定的 bean 在调用这个方法前，已经被填充好了对应的属性值，方法返回的 bean 实例将会包装原始 bean。默认返回它本身。
+	 * 如果是null，则不执行。
+	 * <p><b>调用的时间具体点就是：在实例化 Bean 之后，填充完 Bean 的属性后，在初始化前进行调用。</b></p>
 	 * @param bean the new bean instance
 	 * @param beanName the name of the bean
 	 * @return the bean instance to use, either the original or a wrapped one;

@@ -605,7 +605,7 @@ public abstract class AbstractAutowireCapableBeanFactory extends AbstractBeanFac
 		try {
 			// 【核心方法】往 bean 实例中填充属性值。
 			populateBean(beanName, mbd, instanceWrapper);
-			// 【核心方法】初始化 bean - 执行自定义的 org.springframework.beans.factory.InitializingBean.afterPropertiesSet
+			// 【核心方法】初始化 bean
 			exposedObject = initializeBean(beanName, exposedObject, mbd);
 		}
 		catch (Throwable ex) {
