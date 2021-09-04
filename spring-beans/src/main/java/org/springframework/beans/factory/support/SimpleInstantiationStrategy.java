@@ -33,9 +33,10 @@ import org.springframework.util.StringUtils;
 
 /**
  * Simple object instantiation strategy for use in a BeanFactory.
- *
+ * <p>提供给 BeanFactory 使用的简易对象初始化策略。
  * <p>Does not support Method Injection, although it provides hooks for subclasses
  * to override to add Method Injection support, for example by overriding methods.
+ * <p>不支持方法注入，如果存在，则会抛出异常。需要使用 {@link CglibSubclassingInstantiationStrategy} 来进行实现。
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
@@ -60,6 +61,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 	@Override
 	public Object instantiate(RootBeanDefinition bd, @Nullable String beanName, BeanFactory owner) {
 		// Don't override the class with CGLIB if no overrides.
+		// 如果没有重写，就不要使用 CGLIB。
 		if (!bd.hasMethodOverrides()) {
 			Constructor<?> constructorToUse;
 			synchronized (bd.constructorArgumentLock) {
@@ -84,10 +86,12 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					}
 				}
 			}
+			// 【核心方法】通过反射以及获取到的无参构造器，来构造 bean 实例。
 			return BeanUtils.instantiateClass(constructorToUse);
 		}
 		else {
 			// Must generate CGLIB subclass.
+			// 如果有重写，则需要使用 CGLIB 来生成子类。
 			return instantiateWithMethodInjection(bd, beanName, owner);
 		}
 	}
@@ -114,6 +118,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 					return null;
 				});
 			}
+			// 【核心方法】通过给定的 构造器 与 具体构造参数，来构造具体实例。
 			return BeanUtils.instantiateClass(ctor, args);
 		}
 		else {
@@ -151,6 +156,7 @@ public class SimpleInstantiationStrategy implements InstantiationStrategy {
 			Method priorInvokedFactoryMethod = currentlyInvokedFactoryMethod.get();
 			try {
 				currentlyInvokedFactoryMethod.set(factoryMethod);
+				// 【核心方法】通过工厂方法以及给定的参数来生成实例。
 				Object result = factoryMethod.invoke(factoryBean, args);
 				if (result == null) {
 					result = new NullBean();

@@ -26,6 +26,7 @@ import org.springframework.beans.BeanInstantiationException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.xml.BeanDefinitionParserDelegate;
 import org.springframework.cglib.core.ClassLoaderAwareGeneratorStrategy;
 import org.springframework.cglib.core.SpringNamingPolicy;
 import org.springframework.cglib.proxy.Callback;
@@ -41,32 +42,41 @@ import org.springframework.util.StringUtils;
 
 /**
  * Default object instantiation strategy for use in BeanFactories.
- *
+ * <p>提供给 BeanFactory 使用的默认对象实例化策略类。
  * <p>Uses CGLIB to generate subclasses dynamically if methods need to be
  * overridden by the container to implement <em>Method Injection</em>.
+ * <p>容器为了实现方法级别的注入，需要重写方法，此时仅使用JDK实例化对象不能够满足方法注入的功能，
+ * 所以此时需要使用 CGLIB 来动态生成子类，并让子类实现需要重写的方法，以此达到重写方法的目的。
+ * <p>为的是实现这两个标签的功能：lookup-method、replace-method，
+ * 详细逻辑见：parseLookupOverrideSubElements & parseReplacedMethodSubElements
  *
  * @author Rod Johnson
  * @author Juergen Hoeller
  * @author Sam Brannen
  * @since 1.1
+ * @see BeanDefinitionParserDelegate#parseLookupOverrideSubElements(org.w3c.dom.Element, org.springframework.beans.factory.support.MethodOverrides)
+ * @see BeanDefinitionParserDelegate#parseReplacedMethodSubElements(org.w3c.dom.Element, org.springframework.beans.factory.support.MethodOverrides)
  */
 public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationStrategy {
 
 	/**
 	 * Index in the CGLIB callback array for passthrough behavior,
 	 * in which case the subclass won't override the original class.
+	 * <p>CGLIB回调数组索引下标，0代表子类不需要重写原始类的方法。
 	 */
 	private static final int PASSTHROUGH = 0;
 
 	/**
 	 * Index in the CGLIB callback array for a method that should
 	 * be overridden to provide <em>method lookup</em>.
+	 * <p>CGLIB回调数据索引下标，1代表需要通过提供的 method lookup 重写方法。
 	 */
 	private static final int LOOKUP_OVERRIDE = 1;
 
 	/**
 	 * Index in the CGLIB callback array for a method that should
 	 * be overridden using generic <em>method replacer</em> functionality.
+	 * <p>CGLIB回调数据索引下标，2代表需要通过 method replacer 重写方法。
 	 */
 	private static final int METHOD_REPLACER = 2;
 
@@ -113,8 +123,10 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 		 * @return new instance of the dynamically generated subclass
 		 */
 		public Object instantiate(@Nullable Constructor<?> ctor, Object... args) {
+			// 获取继承指定类的子类。
 			Class<?> subclass = createEnhancedSubclass(this.beanDefinition);
 			Object instance;
+			// 实例化增强子类。
 			if (ctor == null) {
 				instance = BeanUtils.instantiateClass(subclass);
 			}
@@ -128,6 +140,7 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 							"Failed to invoke constructor for CGLIB enhanced subclass [" + subclass.getName() + "]", ex);
 				}
 			}
+			// 往实例中设置 look-up & replace-method 回调的实现（通过 Enhancer 类获取到的子类，是一定实现了 Factory 接口的）。
 			// SPR-10785: set callbacks directly on the instance instead of in the
 			// enhanced class (via the Enhancer) in order to avoid memory leaks.
 			Factory factory = (Factory) instance;
@@ -142,6 +155,7 @@ public class CglibSubclassingInstantiationStrategy extends SimpleInstantiationSt
 		 * definition, using CGLIB.
 		 */
 		private Class<?> createEnhancedSubclass(RootBeanDefinition beanDefinition) {
+			// 构建一个 Enhancer 并返回继承指定类的增强子类
 			Enhancer enhancer = new Enhancer();
 			enhancer.setSuperclass(beanDefinition.getBeanClass());
 			enhancer.setNamingPolicy(SpringNamingPolicy.INSTANCE);

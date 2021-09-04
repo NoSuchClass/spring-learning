@@ -65,11 +65,15 @@ import org.springframework.cglib.core.WeakCacheKey;
  * generated subclasses override the non-final methods of the superclass and
  * have hooks which callback to user-defined interceptor
  * implementations.
+ * <p>动态生成子类，以此来提供拦截方法的能力。
+ * 动态生成的子类能够重写父类 non-final（非final） 的方法，并且持有用户自定义的方法拦截的回调实现。
  * <p>
  * The original and most general callback type is the {@link MethodInterceptor}, which
  * in AOP terms enables "around advice"--that is, you can invoke custom code both before
  * and after the invocation of the "super" method. In addition you can modify the
  * arguments before calling the super method, or not call it at all.
+ * <p>最常用的回调类型为 MethodInterceptor，在 AOP 支持环绕切入增强。
+ * 环绕增强是指：能够在夫类方法执行前后执行自定义的代码，也能够在执行被拦截的父类方法前修改参数或者直接拦截不进行调用。
  * <p>
  * Although <code>MethodInterceptor</code> is generic enough to meet any
  * interception need, it is often overkill. For simplicity and performance, additional
